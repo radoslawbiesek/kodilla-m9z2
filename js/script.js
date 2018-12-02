@@ -1,54 +1,49 @@
 'use strict';
-(function(){ 
-	/* W kodzie HTML i CSS dodaliśmy style dla prostego modala, który będzie zawsze wyśrodkowany w oknie. 
-	
-	Teraz wystarczy napisać funkcję otwierającą modal:
-	*/
-	
-	var showModal = function(event){
-		event.preventDefault();
-		document.querySelector('#modal-overlay').classList.add('show');
-	};
-	
-	// Mimo, że obecnie mamy tylko jeden link, stosujemy kod dla wielu linków. W ten sposób nie będzie trzeba go zmieniać, kiedy zechcemy mieć więcej linków lub guzików otwierających modale
-	
-	var modalLinks = document.querySelectorAll('.show-modal');
-	
-	for(var i = 0; i < modalLinks.length; i++){
-		modalLinks[i].addEventListener('click', showModal);
-	}
-	
-	// Dodajemy też funkcję zamykającą modal, oraz przywiązujemy ją do kliknięć na elemencie z klasą "close". 
+// (function(){ 
 
+    // Arrays with DOM elements
+    var modalLinks = document.querySelectorAll('.show-modal');
+    var modals = document.querySelectorAll('.modal');
+    var closeButtons = document.querySelectorAll('.modal .close');
+
+
+    // Function that shows modal connected to link
+    var showModal = function(event){
+        event.preventDefault();
+        // Ensure that only one modal will have 'show' class 
+        hideAll();
+        // Find modal with an ID equal to href attribute of the clicked link, add 'show' class
+        document.getElementById(this.hash.slice(1)).classList.add('show');
+        // Add 'show' class to overlay
+        document.querySelector('#modal-overlay').classList.add('show');
+    };
+    
+    // Function that hides overlay after clicking the button or overlay
 	var hideModal = function(event){
 		event.preventDefault();
 		document.querySelector('#modal-overlay').classList.remove('show');
 	};
-	
-	var closeButtons = document.querySelectorAll('.modal .close');
-	
+
+    // Delete 'show' class from all modals
+    var hideAll = function(){
+        for(var i = 0; i < modals.length; i++){
+            modals[i].classList.remove('show');
+        }
+    }
+
+    // Add event listeners
+	for(var i = 0; i < modalLinks.length; i++){
+		modalLinks[i].addEventListener('click', showModal);
+	}
+		
 	for(var i = 0; i < closeButtons.length; i++){
 		closeButtons[i].addEventListener('click', hideModal);
-	}
-	
-	// Dobrą praktyką jest również umożliwianie zamykania modala poprzez kliknięcie w overlay. 
-	
-	document.querySelector('#modal-overlay').addEventListener('click', hideModal);
-	
-	// Musimy jednak pamiętać, aby zablokować propagację kliknięć z samego modala - inaczej każde kliknięcie wewnątrz modala również zamykałoby go. 
-	
-	var modals = document.querySelectorAll('.modal');
+    }
+    document.querySelector('#modal-overlay').addEventListener('click', hideModal);
 	
 	for(var i = 0; i < modals.length; i++){
 		modals[i].addEventListener('click', function(event){
 			event.stopPropagation();
 		});
-	}
-	
-	/* I to wszystko - mamy już działający modal! 
-	
-	ĆWICZENIE: 
-	Zmień funkcję showModal tak, aby w momencie wyświetlania była zmieniana treść nagłówka na dowolną inną, np. "Modal header". 
-	*/
-	
-})(); 
+    }	
+// })(); 
